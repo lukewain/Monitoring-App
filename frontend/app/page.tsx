@@ -3,8 +3,6 @@ import { authOptions } from "@/lib/auth";
 import { fetchLogs } from "@/lib/api";
 import { SignInButton } from "@/components/SignInButton";
 import { SignOutButton } from "@/components/SignOutButton";
-import type { LogEntry } from "@/types";
-import { LogStream } from "@/components/LogStream";
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
@@ -41,15 +39,7 @@ export default async function HomePage() {
     );
   }
 
-  let logs: LogEntry[] = [];
-  let loadError = "";
-
-  try {
-    logs = await fetchLogs();
-  } catch (error) {
-    loadError =
-      error instanceof Error ? error.message : "Failed to load logs.";
-  }
+  const logs = await fetchLogs();
 
   return (
     <main className="page">
@@ -63,7 +53,25 @@ export default async function HomePage() {
           <SignOutButton />
         </div>
       </header>
-      <LogStream initialLogs={logs} initialError={loadError} />
+      <section className="grid">
+        {logs.length === 0 ? (
+          <p className="empty">No logs yet. Start the connector to ingest.</p>
+        ) : (
+          logs.map((log) => (
+            <article key={log.id} className="log-card">
+              <div className="log-header">
+                <span className="badge">{log.level}</span>
+                <span className="hostname">{log.hostname}</span>
+                <span className="source">{log.source}</span>
+                <time dateTime={log.timestamp}>
+                  {new Date(log.timestamp).toLocaleString()}
+                </time>
+              </div>
+              <p className="message">{log.message}</p>
+            </article>
+          ))
+        )}
+      </section>
     </main>
   );
 }

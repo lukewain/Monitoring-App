@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { Space_Grotesk } from "next/font/google";
+import { Press_Start_2P } from "next/font/google";
 import "./globals.css";
 
-const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] });
+const minecraft = Press_Start_2P({ weight: "400", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Monitoring Dashboard",
@@ -16,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={spaceGrotesk.className}>{children}</body>
+      <body className={minecraft.className}>{children}</body>
     </html>
   );
 }
