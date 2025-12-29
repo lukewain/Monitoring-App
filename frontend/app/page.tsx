@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth";
 import { fetchLogs } from "@/lib/api";
 import { SignInButton } from "@/components/SignInButton";
 import { SignOutButton } from "@/components/SignOutButton";
+import type { LogEntry } from "@/types";
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
@@ -39,7 +40,7 @@ export default async function HomePage() {
     );
   }
 
-  let logs = [];
+  let logs: LogEntry[] = [];
   let loadError = "";
 
   try {
