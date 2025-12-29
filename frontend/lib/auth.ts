@@ -16,7 +16,7 @@ export const authOptions: NextAuthOptions = {
 
       const githubLogin =
         typeof (profile as { login?: string } | null)?.login === "string"
-          ? (profile as { login?: string }).login
+          ? (profile as { login?: string }).login ?? ""
           : "";
       return githubLogin.toLowerCase() === "lukewain";
     }
