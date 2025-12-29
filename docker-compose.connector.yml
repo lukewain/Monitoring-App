@@ -1,0 +1,12 @@
+services:
+  connector:
+    build: ./connector
+    container_name: monitoring-connector
+    env_file:
+      - ./connector/.env
+    volumes:
+      - /var/log:/var/log:ro
+      - connector-state:/var/lib/monitoring
+
+volumes:
+  connector-state:
