@@ -1,0 +1,43 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: monitoring-postgres
+    environment:
+      POSTGRES_USER: logs
+      POSTGRES_PASSWORD: logs
+      POSTGRES_DB: logs
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U logs"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  backend:
+    build: ./backend
+    container_name: monitoring-backend
+    environment:
+      DATABASE_URL: postgresql+psycopg2://logs:logs@postgres:5432/logs
+      ALLOWED_ORIGINS: http://localhost:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+  frontend:
+    build: ./frontend
+    container_name: monitoring-frontend
+    environment:
+      NEXTAUTH_URL: http://localhost:3000
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+      GITHUB_ID: ${GITHUB_ID}
+      GITHUB_SECRET: ${GITHUB_SECRET}
+      BACKEND_URL: http://backend:8000
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+volumes:
+  pgdata:
