@@ -39,7 +39,15 @@ export default async function HomePage() {
     );
   }
 
-  const logs = await fetchLogs();
+  let logs = [];
+  let loadError = "";
+
+  try {
+    logs = await fetchLogs();
+  } catch (error) {
+    loadError =
+      error instanceof Error ? error.message : "Failed to load logs.";
+  }
 
   return (
     <main className="page">
@@ -54,7 +62,12 @@ export default async function HomePage() {
         </div>
       </header>
       <section className="grid">
-        {logs.length === 0 ? (
+        {loadError ? (
+          <p className="empty">
+            Unable to load logs right now. Check that the connector and backend
+            are reachable.
+          </p>
+        ) : logs.length === 0 ? (
           <p className="empty">No logs yet. Start the connector to ingest.</p>
         ) : (
           logs.map((log) => (
