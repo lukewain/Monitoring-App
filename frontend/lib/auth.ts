@@ -14,7 +14,10 @@ export const authOptions: NextAuthOptions = {
         return false;
       }
 
-      const githubLogin = typeof profile?.login === "string" ? profile.login : "";
+      const githubLogin =
+        typeof (profile as { login?: string } | null)?.login === "string"
+          ? (profile as { login?: string }).login
+          : "";
       return githubLogin.toLowerCase() === "lukewain";
     }
   },
